@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adopt a Cat — Help Stop Stray Cats</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <header class="header">
+    <h1>Adopt a <span class="com">Cat</span> 🐾</h1>
+
+    <h2>
+      With your help we can stop having so many stray cats.
+      <a class="inline-link" href="https://www.gofundme.com/f/spay-and-neuter-cats" target="_blank" rel="noopener">
+        Visit our GoFundMe
+      </a>
+    </h2>
+
+    <p class="intro">
+      With your help we can stop having so many stray cats.
+      We have a GoFundMe page to help with the costs of spaying and neutering cats.
+      Please consider donating and sharing our page with friends and family.
+      We accept Apple Pay, Google Pay, and PayPal.
+    </p>
+
+    <div class="donate-button">
+      <a href="https://www.gofundme.com/f/spay-and-neuter-cats" target="_blank" rel="noopener">Donate Now</a>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ===================== CAT SEARCH + PAGINATION (GET) ===================== -->
+    <section class="card">
+      <h3>Find Cats by Breed (GET + Pagination)</h3>
+
+      <div class="controls">
+        <label>
+          Breed:
+          <select id="breedSelect">
+            <option value="">Loading breeds...</option>
+          </select>
+        </label>
+
+        <label>
+          Per page:
+          <select id="limitSelect">
+            <option value="6">6</option>
+            <option value="9" selected>9</option>
+            <option value="12">12</option>
+          </select>
+        </label>
+
+        <button id="searchBtn">Search</button>
+      </div>
+
+      <div class="pager">
+        <button id="prevBtn" disabled>◀ Prev</button>
+        <span id="pageInfo">Page 1</span>
+        <button id="nextBtn" disabled>Next ▶</button>
+      </div>
+
+      <p id="status" class="status" aria-live="polite"></p>
+      <div id="gallery" class="grid"></div>
+    </section>
+
+    <!-- ===================== FAVORITES (POST + GET + DELETE bonus) ===================== -->
+    <section class="card">
+      <h3>Your Favorites (POST + GET)</h3>
+      <p class="small">Click ❤️ Favorite on any cat to save it to your favorites.</p>
+      <div id="favoritesGallery" class="grid small-grid"></div>
+    </section>
+
+    <!-- ===================== NEWSLETTER (POST + PATCH) ===================== -->
+    <section class="card">
+      <h3>Newsletter Signup (POST + PATCH)</h3>
+      <p class="small">
+        Sign up to stay updated on progress and events (demo using a test API).
+      </p>
+
+      <form id="newsletterForm" class="form">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required placeholder="you@example.com" />
+
+        <label for="frequency">Updates:</label>
+        <select id="frequency" name="frequency">
+          <option value="weekly" selected>Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+
+        <button type="submit" id="subscribeBtn">Subscribe</button>
+      </form>
+
+      <div id="subscriptionPanel" class="subscription hidden">
+        <p><strong>Subscription saved!</strong> (Test API for project)</p>
+        <button id="updatePreferenceBtn">Update Preference (PATCH)</button>
+        <p id="subStatus" class="status" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>Website</h3>
+      <a class="inline-link" href="https://www.gofundme.com/f/spay-and-neuter-cats" target="_blank" rel="noopener">
+        GoFundMe Page
+      </a>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p class="small">Built with Fetch + async/await + JavaScript modules.</p>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
+``
