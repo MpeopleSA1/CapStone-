@@ -1,0 +1,869 @@
+{
+  "info": {
+    "name": "Photo Booking System API - Complete Test Suite",
+    "description": "Complete API testing collection with admin setup based on schema",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "photo-booking-complete-003"
+  },
+  "item": [
+    {
+      "name": "0. INITIAL SETUP (Run First)",
+      "description": "One-time setup to create admin user - Run this section first before any other tests",
+      "item": [
+        {
+          "name": "Create Admin User (Run Once - One Time Only)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if(pm.response.code === 200 || pm.response.code === 201) {",
+                  "    console.log('✓ Admin user created successfully');",
+                  "    pm.collectionVariables.set(\"admin_token\", jsonData.token);",
+                  "    pm.collectionVariables.set(\"admin_id\", jsonData.userId);",
+                  "    pm.collectionVariables.set(\"admin_email\", jsonData.email);",
+                  "    console.log('Admin ID: ' + jsonData.userId);",
+                  "    console.log('Admin Email: ' + jsonData.email);",
+                  "} else if(pm.response.code === 409) {",
+                  "    console.log('Admin user already exists - this is fine, continue to login');",
+                  "} else {",
+                  "    console.log('Response: ' + pm.response.text());",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"System Administrator\",\n  \"email\": \"admin@photobooking.com\",\n  \"password\": \"Admin@123\",\n  \"role\": \"ADMIN\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/api/auth/register",
+              "host": ["http://localhost:8081"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "1. AUTHENTICATION & USER MANAGEMENT",
+      "description": "Login and manage users",
+      "item": [
+        {
+          "name": "Login as Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if(jsonData.token) {",
+                  "    pm.collectionVariables.set(\"admin_token\", jsonData.token);",
+                  "    pm.collectionVariables.set(\"admin_id\", jsonData.userId);",
+                  "    pm.collectionVariables.set(\"admin_email\", jsonData.email);",
+                  "    console.log('✓ Admin logged in successfully');",
+                  "    console.log('Admin ID: ' + jsonData.userId);",
+                  "    console.log('Admin Email: ' + jsonData.email);",
+                  "} else {",
+                  "    console.log('Login failed: ' + pm.response.text());",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@photobooking.com\",\n  \"password\": \"Admin@123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/api/auth/login",
+              "host": ["http://localhost:8081"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Register New Customer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if(pm.response.code === 200 || pm.response.code === 201) {",
+                  "    pm.collectionVariables.set(\"customer_token\", jsonData.token);",
+                  "    pm.collectionVariables.set(\"customer_id\", jsonData.userId);",
+                  "    pm.collectionVariables.set(\"customer_email\", jsonData.email);",
+                  "    pm.collectionVariables.set(\"customer_name\", jsonData.name);",
+                  "    console.log('✓ Customer created and logged in successfully');",
+                  "    console.log('Customer ID: ' + jsonData.userId);",
+                  "    console.log('Customer Email: ' + jsonData.email);",
+                  "} else {",
+                  "    console.log('Registration failed: ' + pm.response.text());",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{$randomFullName}}\",\n  \"email\": \"customer{{$randomInt}}@example.com\",\n  \"password\": \"Customer@123\",\n  \"role\": \"CUSTOMER\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/api/auth/register",
+              "host": ["http://localhost:8081"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Register New Photographer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if(pm.response.code === 200 || pm.response.code === 201) {",
+                  "    pm.collectionVariables.set(\"photographer_token\", jsonData.token);",
+                  "    pm.collectionVariables.set(\"photographer_id\", jsonData.userId);",
+                  "    pm.collectionVariables.set(\"photographer_email\", jsonData.email);",
+                  "    pm.collectionVariables.set(\"photographer_name\", jsonData.name);",
+                  "    console.log('✓ Photographer created successfully');",
+                  "    console.log('Photographer ID: ' + jsonData.userId);",
+                  "} else {",
+                  "    console.log('Registration failed: ' + pm.response.text());",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{$randomFullName}}\",\n  \"email\": \"photographer{{$randomInt}}@photography.com\",\n  \"password\": \"Photo@123\",\n  \"role\": \"PHOTOGRAPHER\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/api/auth/register",
+              "host": ["http://localhost:8081"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login as Customer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if(jsonData.token) {",
+                  "    pm.collectionVariables.set(\"customer_token\", jsonData.token);",
+                  "    pm.collectionVariables.set(\"customer_id\", jsonData.userId);",
+                  "    pm.collectionVariables.set(\"customer_email\", jsonData.email);",
+                  "    console.log('✓ Customer logged in successfully');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{customer_email}}\",\n  \"password\": \"Customer@123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/api/auth/login",
+              "host": ["http://localhost:8081"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login as Photographer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if(jsonData.token) {",
+                  "    pm.collectionVariables.set(\"photographer_token\", jsonData.token);",
+                  "    pm.collectionVariables.set(\"photographer_id\", jsonData.userId);",
+                  "    console.log('✓ Photographer logged in successfully');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{photographer_email}}\",\n  \"password\": \"Photo@123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/api/auth/login",
+              "host": ["http://localhost:8081"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Current User Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8081/api/users/{{customer_id}}",
+              "host": ["http://localhost:8081"],
+              "path": ["api", "users", "{{customer_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Get All Users (Admin Only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8081/api/users",
+              "host": ["http://localhost:8081"],
+              "path": ["api", "users"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. BOOKING MANAGEMENT",
+      "description": "Create and manage bookings",
+      "item": [
+        {
+          "name": "Create New Booking",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if(pm.response.code === 200 || pm.response.code === 201) {",
+                  "    pm.collectionVariables.set(\"booking_id\", jsonData.id);",
+                  "    console.log('✓ Booking created with ID: ' + jsonData.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerName\": \"{{customer_name}}\",\n  \"date\": \"2026-06-15\",\n  \"seats\": 2,\n  \"notes\": \"Wedding photography session - outdoor venue\",\n  \"status\": \"PENDING\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/api/bookings",
+              "host": ["http://localhost:8081"],
+              "path": ["api", "bookings"]
+            }
+          }
+        },
+        {
+          "name": "Create Another Booking (Different Date)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerName\": \"{{customer_name}}\",\n  \"date\": \"2026-07-20\",\n  \"seats\": 4,\n  \"notes\": \"Family portrait session - studio\",\n  \"status\": \"PENDING\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/api/bookings",
+              "host": ["http://localhost:8081"],
+              "path": ["api", "bookings"]
+            }
+          }
+        },
+        {
+          "name": "Get All Bookings for Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8081/api/bookings/user",
+              "host": ["http://localhost:8081"],
+              "path": ["api", "bookings", "user"]
+            }
+          }
+        },
+        {
+          "name": "Get Booking by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8081/api/bookings/{{booking_id}}",
+              "host": ["http://localhost:8081"],
+              "path": ["api", "bookings", "{{booking_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Booking Status (to CONFIRMED)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{photographer_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"CONFIRMED\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/api/bookings/{{booking_id}}/status",
+              "host": ["http://localhost:8081"],
+              "path": ["api", "bookings", "{{booking_id}}", "status"]
+            }
+          }
+        },
+        {
+          "name": "Update Booking Status (to COMPLETED) - Admin",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"COMPLETED\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/api/bookings/{{booking_id}}/status",
+              "host": ["http://localhost:8081"],
+              "path": ["api", "bookings", "{{booking_id}}", "status"]
+            }
+          }
+        },
+        {
+          "name": "Cancel Booking",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8081/api/bookings/{{booking_id}}",
+              "host": ["http://localhost:8081"],
+              "path": ["api", "bookings", "{{booking_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Get All Bookings (Admin View)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8081/api/bookings/all",
+              "host": ["http://localhost:8081"],
+              "path": ["api", "bookings", "all"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. BOOKING QUERIES & FILTERS",
+      "description": "Filter and search bookings",
+      "item": [
+        {
+          "name": "Get Bookings by Date Range",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{photographer_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8081/api/bookings?startDate=2026-06-01&endDate=2026-07-31",
+              "host": ["http://localhost:8081"],
+              "path": ["api", "bookings"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2026-06-01",
+                  "equals": true
+                },
+                {
+                  "key": "endDate",
+                  "value": "2026-07-31",
+                  "equals": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Bookings by Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{photographer_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8081/api/bookings?status=CONFIRMED",
+              "host": ["http://localhost:8081"],
+              "path": ["api", "bookings"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "CONFIRMED",
+                  "equals": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Upcoming Bookings",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8081/api/bookings/upcoming",
+              "host": ["http://localhost:8081"],
+              "path": ["api", "bookings", "upcoming"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. BULK TEST DATA CREATION",
+      "description": "Create multiple test bookings at once",
+      "item": [
+        {
+          "name": "Create Wedding Booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerName\": \"{{customer_name}}\",\n  \"date\": \"2026-08-15\",\n  \"seats\": 6,\n  \"notes\": \"Wedding ceremony and reception - full day coverage\",\n  \"status\": \"PENDING\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/api/bookings",
+              "host": ["http://localhost:8081"],
+              "path": ["api", "bookings"]
+            }
+          }
+        },
+        {
+          "name": "Create Portrait Session Booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerName\": \"{{customer_name}}\",\n  \"date\": \"2026-09-05\",\n  \"seats\": 1,\n  \"notes\": \"Professional headshot session for LinkedIn\",\n  \"status\": \"PENDING\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/api/bookings",
+              "host": ["http://localhost:8081"],
+              "path": ["api", "bookings"]
+            }
+          }
+        },
+        {
+          "name": "Create Corporate Event Booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerName\": \"{{customer_name}}\",\n  \"date\": \"2026-10-10\",\n  \"seats\": 3,\n  \"notes\": \"Annual company gala - need coverage of speakers and networking\",\n  \"status\": \"PENDING\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/api/bookings",
+              "host": ["http://localhost:8081"],
+              "path": ["api", "bookings"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. CLEANUP & RESET",
+      "description": "Delete test data",
+      "item": [
+        {
+          "name": "Delete Booking (Cleanup)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8081/api/bookings/{{booking_id}}",
+              "host": ["http://localhost:8081"],
+              "path": ["api", "bookings", "{{booking_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Customer Account (Admin Only)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8081/api/users/{{customer_id}}",
+              "host": ["http://localhost:8081"],
+              "path": ["api", "users", "{{customer_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Photographer Account (Admin Only)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8081/api/users/{{photographer_id}}",
+              "host": ["http://localhost:8081"],
+              "path": ["api", "users", "{{photographer_id}}"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8081",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "admin_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "admin_email",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "customer_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "customer_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "customer_email",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "customer_name",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "photographer_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "photographer_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "photographer_email",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "photographer_name",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "booking_id",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
